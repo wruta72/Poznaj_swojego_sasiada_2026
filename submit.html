@@ -120,31 +120,46 @@
     const supabaseClient =
   window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-    function submitFact() {
+    async function submitFact() {
+  const name = document.getElementById("name").value.trim();
+  const fact = document.getElementById("fact").value.trim();
+  const message = document.getElementById("message");
 
-      const name = document.getElementById("name").value.trim();
-      const fact = document.getElementById("fact").value.trim();
-      const message = document.getElementById("message");
+  if (name === "") {
+    alert("Podaj imię albo pseudonim.");
+    return;
+  }
 
-      if (name === "") {
-        alert("Podaj imię albo pseudonim.");
-        return;
+  if (fact === "") {
+    alert("Podaj ciekawy fakt o sobie.");
+    return;
+  }
+
+  // Save the submission to Supabase
+  const { data, error } = await supabase
+    .from("submitted_facts")
+    .insert([
+      {
+        name: name,
+        fact: fact
       }
+    ]);
 
-      if (fact === "") {
-        alert("Podaj ciekawy fakt o sobie.");
-        return;
-      }
+  if (error) {
+    console.error("Supabase error:", error);
+    message.textContent =
+      "Wystąpił błąd. Spróbuj ponownie.";
+    return;
+  }
 
-      // Na razie tylko testujemy formularz.
-      // W następnym kroku podłączymy tutaj Google Sheets.
+  // Success
+  message.textContent =
+    "Dziękujemy! Twój fakt został zgłoszony.";
 
-      message.textContent =
-        "Dziękujemy! Twój fakt został zgłoszony.";
+  document.getElementById("name").value = "";
+  document.getElementById("fact").value = "";
+}
 
-      document.getElementById("name").value = "";
-      document.getElementById("fact").value = "";
-    }
   </script>
 
 </body>
