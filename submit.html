@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>Podaj swojego sąsiada</title>
+  <title>Poznaj swojego sąsiada</title>
 
   <style>
     body {
@@ -81,10 +81,10 @@
 
   <div class="container">
 
-    <h1>📝 Twój fakt</h1>
+    <h1>📝 Ciekawostka / śmieszny fakt o Tobie</h1>
 
     <p>
-      Podaj swoje imię albo pseudonim oraz ciekawy fakt o sobie.
+      Podaj swoje imię albo pseudonim oraz ciekawy albo śmieszny fakt o sobie.
       Później inni uczestnicy będą musieli dopasować fakt do właściwej osoby.
     </p>
 
@@ -106,7 +106,7 @@
     ></textarea>
 
     <button onclick="submitFact()">
-      SUBMIT
+      ZAPISZ
     </button>
 
     <div id="message"></div>
@@ -114,10 +114,11 @@
   </div>
 
   <script>
-    alert("sript starte");
+    
     const SUPABASE_URL = "https://xbchemvfmotgfymenadz.supabase.co";
     const SUPABASE_KEY = "sb_publishable_GzkW2jW5YygWX6VGLjCqdA_YdDsx9-C";
-console.log("Supabase library:", window.supabase);
+    
+    console.log("Supabase library:", window.supabase);
     const supabaseClient =
   window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
