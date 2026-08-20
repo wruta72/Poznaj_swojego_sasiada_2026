@@ -114,6 +114,12 @@
   </div>
 
   <script>
+    const SUPABASE_URL = "https://xbchemvfmotgfymenadz.supabase.co";
+    const SUPABASE_KEY = "sb_publishable_GzkW2jW5YygWX6VGLjCqdA_YdDsx9-C";
+
+    const supabaseClient =
+  window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
     function submitFact() {
 
       const name = document.getElementById("name").value.trim();
