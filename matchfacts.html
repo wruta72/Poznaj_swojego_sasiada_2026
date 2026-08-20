@@ -353,26 +353,20 @@
     }
 
 
-    // Save facts
+    // Pick 10 random facts
 
-    facts = shuffle(data);
+const shuffledFacts = shuffle(data);
 
-
-    // ========================================================
-    // GET UNIQUE NAMES
-    // ========================================================
-
-    const uniqueNames = [
-      ...new Set(
-        data.map(item => item.name)
-      )
-    ];
+facts = shuffledFacts.slice(0, 10);
 
 
-    // Shuffle names too
+// Get names from those SAME 10 facts
 
-    const names = shuffle(uniqueNames);
-
+const names = shuffle([
+  ...new Set(
+    facts.map(item => item.name)
+  )
+]);
 
     // ========================================================
     // CREATE FACTS ON PAGE
