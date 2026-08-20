@@ -581,12 +581,11 @@
       data,
       error
     } = await supabaseClient
-      .from("Fact_matches")
+      .from("MatchFactsScores")
       .insert([
         {
           name: playerName,
-          score: score,
-          total: total
+          score: score
         }
       ]);
 
