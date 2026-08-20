@@ -1,0 +1,673 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Dzień Sąsiada 2026 - Poznajmy się!</title>
+
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f4f4f4;
+      margin: 0;
+      padding: 20px;
+    }
+
+    .logo {
+      display: block;
+      max-width: 100%;
+      width: 200px;
+      height: auto;
+      margin: 0 auto;
+    }
+
+    .game {
+      max-width: 700px;
+      margin: auto;
+      background: white;
+      padding: 25px;
+      border-radius: 15px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    }
+
+    h1 {
+      margin-top: 0;
+      text-align: center;
+    }
+
+    p {
+      line-height: 1.5;
+    }
+
+    input[type="text"] {
+      width: 100%;
+      padding: 12px;
+      margin: 0 0 20px;
+      box-sizing: border-box;
+      font-size: 16px;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+    }
+
+    input[type="text"]::placeholder {
+      font-style: italic;
+    }
+
+    button {
+      width: 100%;
+      padding: 14px;
+      font-size: 18px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      background: #333;
+      color: white;
+      margin-top: 15px;
+    }
+
+    button:hover {
+      background: #555;
+    }
+
+    #gameScreen,
+    #resultScreen {
+      display: none;
+    }
+
+    .fact {
+      background: #f1f1f1;
+      padding: 18px;
+      margin-bottom: 18px;
+      border-radius: 10px;
+    }
+
+    .fact-number {
+      font-weight: bold;
+      margin-bottom: 8px;
+    }
+
+    .fact-text {
+      font-size: 17px;
+      margin-bottom: 12px;
+    }
+
+    select {
+      width: 100%;
+      padding: 12px;
+      font-size: 16px;
+      border-radius: 8px;
+      border: 1px solid #bbb;
+      background: white;
+    }
+
+    .loading {
+      text-align: center;
+      font-size: 18px;
+      padding: 30px 10px;
+    }
+
+    .error {
+      color: #b00020;
+      text-align: center;
+      padding: 20px;
+    }
+
+    .score {
+      text-align: center;
+      font-size: 24px;
+      font-weight: bold;
+      margin: 25px 0;
+    }
+
+    .result-message {
+      text-align: center;
+      font-size: 18px;
+      line-height: 1.5;
+    }
+
+    .correct {
+      border: 2px solid #4caf50;
+    }
+
+    .incorrect {
+      border: 2px solid #e53935;
+    }
+
+    .small-note {
+      font-size: 14px;
+      color: #666;
+      text-align: center;
+    }
+  </style>
+</head>
+
+<body>
+
+<div class="game">
+
+  <!-- START SCREEN -->
+  <div id="startScreen">
+
+    <img
+      src="Czmon-logo bez tla.png"
+      class="logo"
+      alt="Czmoń logo"
+    >
+
+    <h1>Dzień Sąsiada 2026</h1>
+    <h1>🎭 Poznajmy się!</h1>
+
+    <div style="text-align: center; padding: 10px;">
+
+      <p>
+        Każdy z uczestników przesłał jeden zabawny fakt o sobie.
+      </p>
+
+      <p>
+        Twoim zadaniem jest dopasowanie każdego faktu
+        do osoby, która go napisała.
+      </p>
+
+      <p>
+        Nie liczy się czas — liczy się, ile osób uda Ci się rozpoznać! 🎉
+      </p>
+
+    </div>
+
+    <p>
+      <strong>Podaj swoje imię albo pseudonim:</strong>
+    </p>
+
+    <input
+      type="text"
+      id="playerName"
+      placeholder="imię lub pseudonim"
+    >
+
+    <button onclick="startGame()">
+      START GRY
+    </button>
+
+  </div>
+
+
+  <!-- GAME SCREEN -->
+  <div id="gameScreen">
+
+    <h1>🎭 Dopasuj fakty</h1>
+
+    <p id="instructions" style="text-align: center;">
+      Przeczytaj każdy fakt i wybierz osobę, która Twoim zdaniem go napisała.
+    </p>
+
+    <div id="factsContainer"></div>
+
+    <button onclick="finishGame()">
+      SPRAWDŹ ODPOWIEDZI
+    </button>
+
+  </div>
+
+
+  <!-- RESULT SCREEN -->
+  <div id="resultScreen">
+
+    <h1>🎉 KONIEC GRY!</h1>
+
+    <div id="result"></div>
+
+  </div>
+
+</div>
+
+
+<!-- SUPABASE -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<script>
+
+  // ==========================================================
+  // SUPABASE CONNECTION
+  // ==========================================================
+
+  const SUPABASE_URL =
+    "https://xbchemvfmotgfymenadz.supabase.co";
+
+  const SUPABASE_KEY =
+    "sb_publishable_GzkW2jW5YygWX6VGLjCqdA_YdDsx9-C";
+
+  const supabaseClient =
+    window.supabase.createClient(
+      SUPABASE_URL,
+      SUPABASE_KEY
+    );
+
+
+  // ==========================================================
+  // GAME VARIABLES
+  // ==========================================================
+
+  let facts = [];
+  let playerName = "";
+
+
+  // ==========================================================
+  // SHUFFLE ARRAY
+  // ==========================================================
+
+  function shuffle(array) {
+
+    const shuffled = [...array];
+
+    for (let i = shuffled.length - 1; i > 0; i--) {
+
+      const j = Math.floor(Math.random() * (i + 1));
+
+      [shuffled[i], shuffled[j]] =
+        [shuffled[j], shuffled[i]];
+    }
+
+    return shuffled;
+  }
+
+
+  // ==========================================================
+  // START GAME
+  // ==========================================================
+
+  async function startGame() {
+
+    playerName =
+      document.getElementById("playerName")
+        .value
+        .trim();
+
+
+    // Check name
+
+    if (playerName === "") {
+
+      alert(
+        "Podaj swoje imię lub pseudonim."
+      );
+
+      return;
+    }
+
+
+    // Show loading
+
+    document.getElementById("startScreen")
+      .style.display = "none";
+
+    document.getElementById("gameScreen")
+      .style.display = "block";
+
+    document.getElementById("factsContainer")
+      .innerHTML =
+        '<div class="loading">Ładowanie faktów... ⏳</div>';
+
+
+    // ========================================================
+    // LOAD FACTS FROM SUPABASE
+    // ========================================================
+
+    const { data, error } =
+      await supabaseClient
+        .from("Submitted_facts")
+        .select("name, fact");
+
+
+    // Handle error
+
+    if (error) {
+
+      console.error(
+        "Error loading facts:",
+        error
+      );
+
+      document.getElementById("factsContainer")
+        .innerHTML =
+          '<div class="error">' +
+          'Nie udało się załadować faktów.<br>' +
+          'Spróbuj odświeżyć stronę.' +
+          '</div>';
+
+      return;
+    }
+
+
+    // Check whether there are facts
+
+    if (!data || data.length === 0) {
+
+      document.getElementById("factsContainer")
+        .innerHTML =
+          '<div class="error">' +
+          'Brak zapisanych faktów.' +
+          '</div>';
+
+      return;
+    }
+
+
+    // Save facts
+
+    facts = shuffle(data);
+
+
+    // ========================================================
+    // GET UNIQUE NAMES
+    // ========================================================
+
+    const uniqueNames = [
+      ...new Set(
+        data.map(item => item.name)
+      )
+    ];
+
+
+    // Shuffle names too
+
+    const names = shuffle(uniqueNames);
+
+
+    // ========================================================
+    // CREATE FACTS ON PAGE
+    // ========================================================
+
+    const container =
+      document.getElementById("factsContainer");
+
+    container.innerHTML = "";
+
+
+    facts.forEach((item, index) => {
+
+      const factDiv =
+        document.createElement("div");
+
+      factDiv.className = "fact";
+
+
+      // Number
+
+      const number =
+        document.createElement("div");
+
+      number.className = "fact-number";
+
+      number.textContent =
+        "Fakt " + (index + 1);
+
+
+      // Fact text
+
+      const factText =
+        document.createElement("div");
+
+      factText.className = "fact-text";
+
+      factText.textContent =
+        "„" + item.fact + "”";
+
+
+      // Dropdown
+
+      const select =
+        document.createElement("select");
+
+      select.dataset.correctName =
+        item.name;
+
+
+      // Default option
+
+      const defaultOption =
+        document.createElement("option");
+
+      defaultOption.value = "";
+
+      defaultOption.textContent =
+        "— wybierz osobę —";
+
+      select.appendChild(
+        defaultOption
+      );
+
+
+      // Add names
+
+      names.forEach(name => {
+
+        const option =
+          document.createElement("option");
+
+        option.value = name;
+
+        option.textContent = name;
+
+        select.appendChild(option);
+
+      });
+
+
+      // Add everything
+
+      factDiv.appendChild(number);
+
+      factDiv.appendChild(factText);
+
+      factDiv.appendChild(select);
+
+      container.appendChild(factDiv);
+
+    });
+
+  }
+
+
+  // ==========================================================
+  // FINISH GAME
+  // ==========================================================
+
+  async function finishGame() {
+
+    const selects =
+      document.querySelectorAll(
+        "#factsContainer select"
+      );
+
+
+    if (selects.length === 0) {
+
+      alert(
+        "Nie znaleziono żadnych faktów."
+      );
+
+      return;
+    }
+
+
+    // ========================================================
+    // CHECK WHETHER EVERYTHING WAS ANSWERED
+    // ========================================================
+
+    let unanswered = 0;
+
+    selects.forEach(select => {
+
+      if (select.value === "") {
+        unanswered++;
+      }
+
+    });
+
+
+    if (unanswered > 0) {
+
+      const confirmSubmit =
+        confirm(
+          "Nie odpowiedziałeś/odpowiedziałaś na " +
+          unanswered +
+          " " +
+          (unanswered === 1 ? "fakt" : "fakty") +
+          ".\n\n" +
+          "Czy na pewno chcesz zakończyć grę?"
+        );
+
+      if (!confirmSubmit) {
+        return;
+      }
+
+    }
+
+
+    // ========================================================
+    // CALCULATE SCORE
+    // ========================================================
+
+    let score = 0;
+
+
+    selects.forEach(select => {
+
+      const selectedName =
+        select.value;
+
+      const correctName =
+        select.dataset.correctName;
+
+
+      if (
+        selectedName !== "" &&
+        selectedName === correctName
+      ) {
+
+        score++;
+
+        select.classList.add(
+          "correct"
+        );
+
+      } else {
+
+        select.classList.add(
+          "incorrect"
+        );
+
+      }
+
+    });
+
+
+    const total =
+      selects.length;
+
+
+    const percentage =
+      Math.round(
+        (score / total) * 100
+      );
+
+
+    // ========================================================
+    // SAVE RESULT
+    // ========================================================
+
+    const {
+      data,
+      error
+    } = await supabaseClient
+      .from("Fact_matches")
+      .insert([
+        {
+          name: playerName,
+          score: score,
+          total: total
+        }
+      ]);
+
+
+    if (error) {
+
+      console.error(
+        "Could not save result:",
+        error
+      );
+
+      alert(
+        "Wynik został policzony, ale nie udało się go zapisać."
+      );
+
+    }
+
+
+    // ========================================================
+    // SHOW RESULT
+    // ========================================================
+
+    document.getElementById("gameScreen")
+      .style.display = "none";
+
+    document.getElementById("resultScreen")
+      .style.display = "block";
+
+
+    let message = "";
+
+
+    if (percentage === 100) {
+
+      message =
+        "🏆 Rewelacja! Wszystkie odpowiedzi poprawne!";
+
+    } else if (percentage >= 75) {
+
+      message =
+        "👏 Świetny wynik! Bardzo dobrze znasz swoich sąsiadów!";
+
+    } else if (percentage >= 50) {
+
+      message =
+        "😊 Całkiem nieźle!";
+
+    } else {
+
+      message =
+        "😄 Wygląda na to, że trzeba lepiej poznać sąsiadów!";
+
+    }
+
+
+    document.getElementById("result")
+      .innerHTML =
+
+      '<div class="score">' +
+        score +
+        ' / ' +
+        total +
+        ' poprawnych' +
+      '</div>' +
+
+      '<div class="score">' +
+        percentage +
+        '%' +
+      '</div>' +
+
+      '<p class="result-message">' +
+        message +
+      '</p>' +
+
+      '<p class="small-note">' +
+        'Dziękujemy za udział! 🎉' +
+      '</p>';
+
+  }
+
+</script>
+
+</body>
+</html>
