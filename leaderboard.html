@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Ranking – Dzień Sąsiada</title>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+  <style>
+    body {
+      font-family: Calibri, Arial, sans-serif;
+      background: #f5f5f5;
+      margin: 0;
+      padding: 20px;
+      text-align: center;
+    }
+.logo {
+  display: block;
+  max-width: 100%;
+  width: 200px;
+  height: auto;
+  margin: 0 auto 0px auto;
+}
+    .container {
+      max-width: 700px;
+      margin: 0 auto;
+      background: white;
+      padding: 15px;
+      border-radius: 15px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    }
+
+    h1 {
+      margin-top: 0px;
+      margin-bottom: 25px;
+    }
+
+    .subtitle {
+      color: #666;
+      margin-bottom: 25px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 16px;
+    }
+
+    th {
+      background: #222;
+      color: white;
+      padding: 12px 8px;
+    }
+
+    td {
+      padding: 12px 8px;
+      border-bottom: 1px solid #ddd;
+    }
+
+    tr:first-child td {
+      font-weight: bold;
+    }
+
+    .place {
+      font-weight: bold;
+      width: 60px;
+    }
+
+    .name {
+      text-align: left;
+    }
+
+    .score,
+    .time {
+      white-space: nowrap;
+    }
+
+    #status {
+      margin-top: 20px;
+      color: #777;
+      font-size: 14px;
+    }
+
+    @media (max-width: 500px) {
+      body {
+        padding: 10px;
+      }
+
+      .container {
+        padding: 15px;
+      }
+
+      table {
+        font-size: 14px;
+      }
+
+      th,
+      td {
+        padding: 9px 5px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="container">
+<div id="startScreen">
+  <img
+    src="Czmon-logo bez tla.png"
+    class="logo"
+  >
+    <h1> Dzień Sąsiada 2026
+    </h1>
+
+  <h1>
+  🏆 Quiz - wyniki
+  </h1>
+
+    <table>
+      <thead>
+        <tr>
+          <th>Miejsce</th>
+          <th>Uczestnik</th>
+          <th>Punkty</th>
+          <th>Czas</th>
+        </tr>
+      </thead>
+
+      <tbody id="leaderboard">
+        <tr>
+          <td colspan="4">Ładowanie wyników...</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div id="status">
+      Ranking aktualizuje się automatycznie.
+    </div>
+
+  </div>
+
+
+  <script>
+
+    // ============================
+    // SUPABASE
+    // ============================
+
+const SUPABASE_URL = "https://vkqduuoskkwfennhgyio.supabase.co";
+const SUPABASE_KEY = "sb_publishable_m2UCOXjJ1GYvK6S_mHChZg_onE2-1sG";
+
+const supabaseClient =
+  window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+    // ============================
+    // LOAD LEADERBOARD
+    // ============================
+
+    async function loadLeaderboard() {
+
+      const { data, error } = await supabaseClient
+        .from("DzienSasiada")
+        .select("Name, Score, Time");
+
+      if (error) {
+        console.error("Leaderboard error:", error);
+
+        document.getElementById("leaderboard").innerHTML = `
+          <tr>
+            <td colspan="4">
+              Nie udało się pobrać wyników.
+            </td>
+          </tr>
+        `;
+
+        return;
+      }
+
+
+      // Sort:
+      // 1. Highest score
+      // 2. Fastest time
+
+      data.sort(function(a, b) {
+
+        if (b.Score !== a.Score) {
+          return b.Score - a.Score;
+        }
+
+        return a.Time - b.Time;
+
+      });
+
+
+      const leaderboard = document.getElementById("leaderboard");
+
+      leaderboard.innerHTML = "";
+
+
+      if (data.length === 0) {
+
+        leaderboard.innerHTML = `
+          <tr>
+            <td colspan="4">
+              Brak wyników.
+            </td>
+          </tr>
+        `;
+
+        return;
+      }
+
+
+      data.forEach(function(player, index) {
+
+        const place = index + 1;
+
+        const time = Number(player.Time) || 0;
+
+        const minutes = Math.floor(time / 60000);
+        const seconds = Math.floor((time % 60000) / 1000);
+
+        const formattedTime =
+          minutes + ":" + String(seconds).padStart(2, "0");
+
+
+        const row = document.createElement("tr");
+
+
+        row.innerHTML = `
+          <td class="place">${place}</td>
+          <td class="name">${escapeHtml(player.Name)}</td>
+          <td class="score">${player.Score}/10</td>
+          <td class="time">${formattedTime}</td>
+        `;
+
+
+        leaderboard.appendChild(row);
+
+      });
+
+
+      document.getElementById("status").textContent =
+        "Ostatnia aktualizacja: " +
+        new Date().toLocaleTimeString("pl-PL");
+
+    }
+
+
+    // ============================
+    // SECURITY
+    // ============================
+
+    function escapeHtml(text) {
+
+      const div = document.createElement("div");
+
+      div.textContent = text;
+
+      return div.innerHTML;
+
+    }
+
+
+    // ============================
+    // START
+    // ============================
+
+    loadLeaderboard();
+
+
+    // Refresh every 30 seconds
+
+    setInterval(loadLeaderboard, 30000);
+
+  </script>
+
+</body>
+</html>
