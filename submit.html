@@ -1,1 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
+  <title>Submit Your Fact</title>
+
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f5f5f5;
+      margin: 0;
+      padding: 20px;
+    }
+
+    .container {
+      max-width: 600px;
+      margin: 40px auto;
+      background: white;
+      padding: 30px;
+      border-radius: 12px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    }
+
+    h1 {
+      text-align: center;
+    }
+
+    p {
+      line-height: 1.5;
+    }
+
+    label {
+      display: block;
+      margin-top: 20px;
+      margin-bottom: 8px;
+      font-weight: bold;
+    }
+
+    input,
+    textarea {
+      width: 100%;
+      box-sizing: border-box;
+      padding: 12px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      font-size: 16px;
+    }
+
+    textarea {
+      min-height: 120px;
+      resize: vertical;
+    }
+
+    button {
+      width: 100%;
+      margin-top: 25px;
+      padding: 14px;
+      border: none;
+      border-radius: 6px;
+      background: #222;
+      color: white;
+      font-size: 16px;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background: #444;
+    }
+
+    #message {
+      margin-top: 20px;
+      text-align: center;
+      font-weight: bold;
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="container">
+
+    <h1>📝 Submit Your Fact</h1>
+
+    <p>
+      Podaj swoje imię albo pseudonim oraz ciekawy fakt o sobie.
+      Później inni uczestnicy będą musieli dopasować fakt do właściwej osoby.
+    </p>
+
+    <label for="name">Imię albo pseudonim:</label>
+
+    <input
+      type="text"
+      id="name"
+      placeholder="Twoje imię lub pseudonim"
+      maxlength="50"
+    >
+
+    <label for="fact">Ciekawy fakt o Tobie:</label>
+
+    <textarea
+      id="fact"
+      placeholder="Napisz tutaj ciekawy fakt o sobie..."
+      maxlength="300"
+    ></textarea>
+
+    <button onclick="submitFact()">
+      SUBMIT
+    </button>
+
+    <div id="message"></div>
+
+  </div>
+
+  <script>
+    function submitFact() {
+
+      const name = document.getElementById("name").value.trim();
+      const fact = document.getElementById("fact").value.trim();
+      const message = document.getElementById("message");
+
+      if (name === "") {
+        alert("Podaj imię albo pseudonim.");
+        return;
+      }
+
+      if (fact === "") {
+        alert("Podaj ciekawy fakt o sobie.");
+        return;
+      }
+
+      // Na razie tylko testujemy formularz.
+      // W następnym kroku podłączymy tutaj Google Sheets.
+
+      message.textContent =
+        "Dziękujemy! Twój fakt został zgłoszony.";
+
+      document.getElementById("name").value = "";
+      document.getElementById("fact").value = "";
+    }
+  </script>
+
+</body>
+</html>
