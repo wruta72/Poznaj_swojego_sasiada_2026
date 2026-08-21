@@ -284,7 +284,30 @@
       document.getElementById("playerName")
         .value
         .trim();
+  // ========================================================
+  // GAME ACTIVE TIME: 19:00 - 20:00
+  // ========================================================
 
+  const now = new Date();
+
+  const GameStartTime = new Date(2026, 7, 22, 19, 00);
+  const GameEndTime = new Date(2026, 7, 22, 20, 00);
+
+  if (now < GameStartTime) {
+    alert(
+      "Gra nie jest jeszcze aktywna. " +
+      "Zapraszamy od godziny 19:00."
+    );
+    return;
+  }
+
+  if (now >= GameEndTime) {
+    alert(
+      "Gra została już zakończona. " +
+      "Dziękujemy za udział!"
+    );
+    return;
+  }
 
     // Check name
 
@@ -470,7 +493,20 @@ const names = shuffle([
   // ==========================================================
 
   async function finishGame() {
+  // ========================================================
+  // CHECK GAME END TIME
+  // ========================================================
 
+  const now = new Date();
+  const GameEndTime = new Date(2026, 7, 22, 20, 00);
+
+  if (now >= GameEndTime) {
+    alert(
+      "Czas gry dobiegł końca. " +
+      "Wynik nie może już zostać wysłany."
+    );
+    return;
+  }
     const selects =
       document.querySelectorAll(
         "#factsContainer select"
