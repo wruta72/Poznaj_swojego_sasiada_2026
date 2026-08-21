@@ -131,7 +131,7 @@
     async function submitFact() {
    
     const now = new Date();
-    const SubmitStartTime  = new Date(2026, 7, 22, 18, 00);
+    const SubmitStartTime  = new Date(2026, 7, 22, 00, 00);
     const SubmitEndTime = new Date(2026, 7, 22, 19, 00);
 
    if (now < SubmitStartTime) {
@@ -153,7 +153,23 @@
     alert("Podaj imię albo pseudonim.");
     return;
   }
+  // Check if this name/nickname has already completed the quiz
+  const { data, error } = await supabaseClient
+    .from("Submitted_facts")
+    .select("name")
+    .eq("name", name)
+    .limit(1);
 
+  if (error) {
+    console.error("Could not check participant:", error);
+    alert("Nie udało się sprawdzić uczestnika. Spróbuj ponownie.");
+    return;
+  }
+
+  if (data && data.length > 0) {
+    alert("Ten uczestnik podał już jeden fakt o sobie. Użyj innego imienia lub pseudonimu.");
+    return;
+  }
   if (fact === "") {
     alert("Podaj ciekawy fakt o sobie.");
     return;
