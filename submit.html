@@ -131,17 +131,17 @@
     async function submitFact() {
    
     const now = new Date();
-    const SubmitStartTime  = new Date(2026, 7, 22, 00, 00);
-    const SubmitEndTime = new Date(2026, 7, 22, 00, 15);
+    const SubmitStartTime  = new Date(2026, 7, 22, 18, 00);
+    const SubmitEndTime = new Date(2026, 7, 22, 19, 00);
 
    if (now < SubmitStartTime) {
-    alert("Zbieranie ciekawych lub zabawnych faktów w konkursie Poznaj Swojego Sąsiada nie jest jeszcze aktywne." + 
+    alert("Zbieranie ciekawych lub zabawnych faktów w konkursie Poznaj Swojego Sąsiada nie jest jeszcze aktywne. " + 
           "Zapraszamy w sobotę 22 sierpnia od godziny 18.00.");
     return;
   }
 
   if (now >= SubmitEndTime) {
-    alert("Zbieranie ciekawych lub zabawnych faktów w konkursie Poznaj Swojego Sąsiada zostało już zakończone."+
+    alert("Zbieranie ciekawych lub zabawnych faktów w konkursie Poznaj Swojego Sąsiada zostało już zakończone. "+
           "Dziękujemy za udział!");
     return;
   }
