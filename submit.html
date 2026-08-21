@@ -194,12 +194,20 @@
     return;
   }
 
-  // Success
-  message.textContent =
-    "Dziękujemy! Twój fakt został zgłoszony.";
+// Success
+message.textContent =
+  "Dziękujemy! Twój fakt został zgłoszony. Możesz już zakończyć tę stronę.";
 
-  document.getElementById("name").value = "";
-  document.getElementById("fact").value = "";
+// Disable the form after successful submission
+document.getElementById("name").disabled = true;
+document.getElementById("fact").disabled = true;
+
+const submitButton = document.querySelector("button");
+
+submitButton.disabled = true;
+submitButton.textContent = "FAKT ZGŁOSZONY";
+submitButton.style.background = "#888";
+submitButton.style.cursor = "default";
 }
 
   </script>
