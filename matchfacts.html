@@ -323,25 +323,25 @@
  console.log("before query");   
     console.log(supabaseClient);
  // Check if this name/nickname has already completed the quiz
-  const { data1, error1 } = await supabaseClient
+  const { data: existingPlayer, error: existingPlayerError } = await supabaseClient
     .from("MatchFactsScores")
     .select("name")
     .eq("name", playerName)
     .limit(1);
 
-  if (error1) {
-    console.error("Could not check participant:", error1);
+  if (existingPlayerError) {
+    console.error("Could not check participant:", existingPlayerError);
     alert("Nie udało się sprawdzić uczestnika. Spróbuj ponownie.");
     return;
   }    
     
-  if (data1 && data1.length > 0) {
+  if (existingPlayer && existingPlayer.length > 0) {
     alert("Ten uczestnik już ukończył grę. Użyj innego imienia lub pseudonimu.");
     return;
   }
 
-    console.log("data:",data1);
-console.log("error:",error1);
+    console.log("data:",existingPlayer);
+console.log("error:",existingPlayerError);
 console.log("playerName:",playerName);
     
     // Show loading
