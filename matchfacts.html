@@ -322,9 +322,9 @@
     
  // Check if this name/nickname has already completed the quiz
   const { data, error } = await supabaseClient
-    .from("DzienSasiada")
-    .select("Name")
-    .eq("Name", name)
+    .from("MatchFactsScores")
+    .select("name")
+    .eq("name", playerName)
     .limit(1);
 
   if (error) {
@@ -334,7 +334,7 @@
   }
 
   if (data && data.length > 0) {
-    alert("Ten uczestnik już ukończył quiz. Użyj innego imienia lub pseudonimu.");
+    alert("Ten uczestnik już ukończył grę. Użyj innego imienia lub pseudonimu.");
     return;
   }
 
