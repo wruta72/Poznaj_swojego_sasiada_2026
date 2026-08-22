@@ -321,19 +321,19 @@
     }
     
  // Check if this name/nickname has already completed the quiz
-  const { data, error } = await supabaseClient
+  const { data1, error1 } = await supabaseClient
     .from("MatchFactsScores")
     .select("name")
     .eq("name", playerName)
     .limit(1);
 
-  if (error) {
-    console.error("Could not check participant:", error);
+  if (error1) {
+    console.error("Could not check participant:", error1);
     alert("Nie udało się sprawdzić uczestnika. Spróbuj ponownie.");
     return;
   }
 
-  if (data && data.length > 0) {
+  if (data1 && data1.length > 0) {
     alert("Ten uczestnik już ukończył grę. Użyj innego imienia lub pseudonimu.");
     return;
   }
@@ -355,7 +355,7 @@
     // LOAD FACTS FROM SUPABASE
     // ========================================================
 
-    const { } =
+    const { data, error} =
       await supabaseClient
         .from("Submitted_facts")
         .select("name, fact");
