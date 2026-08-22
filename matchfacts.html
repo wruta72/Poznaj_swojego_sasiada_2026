@@ -319,7 +319,24 @@
 
       return;
     }
+    
+ // Check if this name/nickname has already completed the quiz
+  const { data, error } = await supabaseClient
+    .from("DzienSasiada")
+    .select("Name")
+    .eq("Name", name)
+    .limit(1);
 
+  if (error) {
+    console.error("Could not check participant:", error);
+    alert("Nie udało się sprawdzić uczestnika. Spróbuj ponownie.");
+    return;
+  }
+
+  if (data && data.length > 0) {
+    alert("Ten uczestnik już ukończył quiz. Użyj innego imienia lub pseudonimu.");
+    return;
+  }
 
     // Show loading
 
