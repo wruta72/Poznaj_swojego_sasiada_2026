@@ -360,7 +360,7 @@ console.log("playerName:",playerName);
     // LOAD FACTS FROM SUPABASE
     // ========================================================
 
-    const { data } =
+    const { dataFacts } =
       await supabaseClient
         .from("Submitted_facts")
         .select("name, fact");
@@ -388,7 +388,7 @@ console.log("playerName:",playerName);
 
     // Check whether there are facts
 
-    if (!data || data.length === 0) {
+    if (!dataFacts || dataFacts.length === 0) {
 
       document.getElementById("factsContainer")
         .innerHTML =
