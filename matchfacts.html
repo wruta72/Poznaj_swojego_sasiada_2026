@@ -332,15 +332,17 @@
     console.error("Could not check participant:", error);
     alert("Nie udało się sprawdzić uczestnika. Spróbuj ponownie.");
     return;
-  }
-console.log("data:",data1);
-console.log("error:",error);
-console.log("playerName:",playerName);    
+  }    
     
   if (data && data.length > 0) {
     alert("Ten uczestnik już ukończył grę. Użyj innego imienia lub pseudonimu.");
     return;
   }
+
+    console.log("data:",data1);
+console.log("error:",error);
+console.log("playerName:",playerName);
+    
     // Show loading
 
     document.getElementById("startScreen")
