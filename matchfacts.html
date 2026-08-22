@@ -323,25 +323,25 @@
  console.log("before query");   
     console.log(supabaseClient);
  // Check if this name/nickname has already completed the quiz
-  const { data, error } = await supabaseClient
+  const { data1, error1 } = await supabaseClient
     .from("MatchFactsScores")
     .select("name")
     .eq("name", playerName)
     .limit(1);
 
   if (error) {
-    console.error("Could not check participant:", error);
+    console.error("Could not check participant:", error1);
     alert("Nie udało się sprawdzić uczestnika. Spróbuj ponownie.");
     return;
   }    
     
-  if (data && data.length > 0) {
+  if (data1 && data1.length > 0) {
     alert("Ten uczestnik już ukończył grę. Użyj innego imienia lub pseudonimu.");
     return;
   }
 
-    console.log("data:",data);
-console.log("error:",error);
+    console.log("data:",data1);
+console.log("error:",error1);
 console.log("playerName:",playerName);
     
     // Show loading
@@ -361,7 +361,7 @@ console.log("playerName:",playerName);
     // LOAD FACTS FROM SUPABASE
     // ========================================================
 
-    const { dataFacts , errorFacts } =
+    const { data , error } =
       await supabaseClient
         .from("Submitted_facts")
         .select("name, fact");
@@ -369,7 +369,7 @@ console.log("playerName:",playerName);
 
     // Handle error
 
-    if (errorFacts) {
+    if (error) {
 
       console.error(
         "Error loading facts:",
@@ -389,7 +389,7 @@ console.log("playerName:",playerName);
 
     // Check whether there are facts
 
-    if (!dataFacts || dataFacts.length === 0) {
+    if (!data || data.length === 0) {
 
       document.getElementById("factsContainer")
         .innerHTML =
