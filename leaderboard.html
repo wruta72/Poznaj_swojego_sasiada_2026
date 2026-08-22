@@ -148,9 +148,12 @@
     // SUPABASE
     // ============================
 
-const SUPABASE_URL = "https://vkqduuoskkwfennhgyio.supabase.co";
-const SUPABASE_KEY = "sb_publishable_m2UCOXjJ1GYvK6S_mHChZg_onE2-1sG";
+  const SUPABASE_URL =
+    "https://xbchemvfmotgfymenadz.supabase.co";
 
+  const SUPABASE_KEY =
+    "sb_publishable_GzkW2jW5YygWX6VGLjCqdA_YdDsx9-C";
+    
 const supabaseClient =
   window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
@@ -161,8 +164,8 @@ const supabaseClient =
     async function loadLeaderboard() {
 
       const { data, error } = await supabaseClient
-        .from("DzienSasiada")
-        .select("Name, Score, Time");
+        .from("MatchFactsScores")
+        .select("name, score");
 
       if (error) {
         console.error("Leaderboard error:", error);
@@ -185,11 +188,10 @@ const supabaseClient =
 
       data.sort(function(a, b) {
 
-        if (b.Score !== a.Score) {
-          return b.Score - a.Score;
+        if (b.score !== a.score) {
+          return b.score - a.score;
         }
 
-        return a.Time - b.Time;
 
       });
 
@@ -217,15 +219,6 @@ const supabaseClient =
 
         const place = index + 1;
 
-        const time = Number(player.Time) || 0;
-
-        const minutes = Math.floor(time / 60000);
-        const seconds = Math.floor((time % 60000) / 1000);
-
-        const formattedTime =
-          minutes + ":" + String(seconds).padStart(2, "0");
-
-
         const row = document.createElement("tr");
 
 
@@ -233,7 +226,6 @@ const supabaseClient =
           <td class="place">${place}</td>
           <td class="name">${escapeHtml(player.Name)}</td>
           <td class="score">${player.Score}/10</td>
-          <td class="time">${formattedTime}</td>
         `;
 
 
