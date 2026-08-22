@@ -325,9 +325,9 @@
  // Check if this name/nickname has already completed the quiz
   const { data: existingPlayer, error: existingPlayerError } = await supabaseClient
     .from("MatchFactsScores")
-    .select("name");
-//    .eq("name", playerName)
-//    .limit(1);
+    .select("name")
+    .eq("name", playerName)
+    .limit(1);
 
   if (existingPlayerError) {
     console.error("Could not check participant:", existingPlayerError);
