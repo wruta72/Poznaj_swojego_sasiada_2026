@@ -321,6 +321,7 @@
     }
 
  console.log("before query");   
+    console.log(supabaseClient);
  // Check if this name/nickname has already completed the quiz
   const { data, error } = await supabaseClient
     .from("MatchFactsScores")
