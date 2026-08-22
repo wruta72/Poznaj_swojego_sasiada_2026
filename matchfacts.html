@@ -360,7 +360,7 @@ console.log("playerName:",playerName);
     // LOAD FACTS FROM SUPABASE
     // ========================================================
 
-    const { dataFacts } =
+    const { dataFacts , errorFacts } =
       await supabaseClient
         .from("Submitted_facts")
         .select("name, fact");
@@ -368,11 +368,11 @@ console.log("playerName:",playerName);
 
     // Handle error
 
-    if (error) {
+    if (errorFacts) {
 
       console.error(
         "Error loading facts:",
-        error
+        errorFacts
       );
 
       document.getElementById("factsContainer")
