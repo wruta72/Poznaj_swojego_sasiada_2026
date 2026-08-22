@@ -322,7 +322,7 @@
 
  console.log("before query");   
  // Check if this name/nickname has already completed the quiz
-  const { data1, error } = await supabaseClient
+  const { data, error } = await supabaseClient
     .from("MatchFactsScores")
     .select("name")
     .eq("name", playerName)
@@ -333,11 +333,11 @@
     alert("Nie udało się sprawdzić uczestnika. Spróbuj ponownie.");
     return;
   }
-console.log("data1:",data1);
+console.log("data:",data1);
 console.log("error:",error);
 console.log("playerName:",playerName);    
     
-  if (data1 && data1.length > 0) {
+  if (data && data.length > 0) {
     alert("Ten uczestnik już ukończył grę. Użyj innego imienia lub pseudonimu.");
     return;
   }
