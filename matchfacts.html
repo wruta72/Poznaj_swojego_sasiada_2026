@@ -186,27 +186,7 @@
       id="playerName"
       placeholder="imię lub pseudonim"
     >
- console.log("before query");   
- // Check if this name/nickname has already completed the quiz
-  const { data, error } = await supabaseClient
-    .from("MatchFactsScores")
-    .select("name")
-    .eq("name", playerName)
-    .limit(1);
 
-  if (error) {
-    console.error("Could not check participant:", error);
-    alert("Nie udało się sprawdzić uczestnika. Spróbuj ponownie.");
-    return;
-  }
-console.log("data:",data);
-console.log("error:",error);
-console.log("playerName:",playerName);    
-    
-  if (data && data.length > 0) {
-    alert("Ten uczestnik już ukończył grę. Użyj innego imienia lub pseudonimu.");
-    return;
-  }
     <button onclick="startGame()">
       START GRY
     </button>
@@ -340,7 +320,27 @@ console.log("playerName:",playerName);
       return;
     }
 
+ console.log("before query");   
+ // Check if this name/nickname has already completed the quiz
+  const { data, error } = await supabaseClient
+    .from("MatchFactsScores")
+    .select("name")
+    .eq("name", playerName)
+    .limit(1);
 
+  if (error) {
+    console.error("Could not check participant:", error);
+    alert("Nie udało się sprawdzić uczestnika. Spróbuj ponownie.");
+    return;
+  }
+console.log("data:",data);
+console.log("error:",error);
+console.log("playerName:",playerName);    
+    
+  if (data && data.length > 0) {
+    alert("Ten uczestnik już ukończył grę. Użyj innego imienia lub pseudonimu.");
+    return;
+  }
     // Show loading
 
     document.getElementById("startScreen")
